@@ -7,3 +7,9 @@
 html {
     background-color: #050014;
 }
+
+.background {
+    background-image: url('/background.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}

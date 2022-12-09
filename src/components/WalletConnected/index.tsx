@@ -1,4 +1,3 @@
-// create a Next component
 import React from "react";
 
 type Props = {
@@ -16,6 +15,7 @@ const WalletConnected: React.FC<Props> = ({ account, isWalletConnected, onClick,
     return (
         <div className={`flex items-center justify-center ${className}`} {...remainingProps}>
             <button
+                type="button"
                 className="border-[#fbfbfe] text-[#fbfbfe] border-x-2 border-y-2 font-bold py-2 px-4 rounded-md"
                 onClick={onClick}
             >
