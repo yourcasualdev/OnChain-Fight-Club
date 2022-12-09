@@ -35,6 +35,7 @@ interface OcfcContext {
     createFight: (address: string, move1: number, move2: number, move3: number) => Promise<any>;
     joinAndFight: (fightId: number, move1: number, move2: number, move3: number) => Promise<any>;
     trainFighter: (address: string) => Promise<any>;
+    withdraw: () => Promise<any>;
 }
 
 const OcfcContext = createContext<OcfcContext | null>(null);
@@ -94,8 +95,15 @@ export const OCFCProvider = (props: any) => {
         return result;
     }
 
+    const withdraw = async () => {
+        if (!contract) return;
+
+        const result = await contract.methods.withdraw().send({ from: account });
+        return result;
+    }
+
     return (
-        <OcfcContext.Provider value={{ account, contract, mintMember, createFight, joinAndFight, trainFighter }}>
+        <OcfcContext.Provider value={{ account, contract, mintMember, createFight, joinAndFight, trainFighter, withdraw }}>
             {props.children}
         </OcfcContext.Provider>
     );
