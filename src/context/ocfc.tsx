@@ -31,6 +31,8 @@ interface Ocfc {
 interface OcfcContext {
     account: string;
     contract: Ocfc["contract"] | null;
+    isWalletConnected: boolean;
+    connectWallet: () => Promise<any>
     mintMember: () => Promise<any>;
     createFight: (address: string, move1: number, move2: number, move3: number) => Promise<any>;
     joinAndFight: (fightId: number, move1: number, move2: number, move3: number) => Promise<any>;
@@ -46,24 +48,41 @@ declare global {
     }
 }
 
+const connectWallet = async () => {
+    if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+        const ethereum = window.ethereum;
+        await ethereum.request({ method: "eth_requestAccounts" });
+        return ethereum;
+    }
+}
+
+const getContract = async (ethereum: any): Promise<Ocfc["contract"] | undefined> => {
+    if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
+        const web3 = new Web3(ethereum);
+        const contract = new web3.eth.Contract(OCFC.abi as any, OCFC.networks["43113"].address) || null;
+        return contract;
+    }
+}
 
 export const OCFCProvider = (props: any) => {
     const [account, setAccount] = useState("");
+    const [isWalletConnected, setIsWalletConnected] = useState(false);
     const [contract, setContract] = useState<Ocfc["contract"] | null>(null);
 
 
     useEffect(() => {
-        if (typeof window !== "undefined" && typeof window.ethereum !== "undefined") {
-            const ethereum = window.ethereum;
-            ethereum.request({ method: "eth_requestAccounts" });
-
-            const web3 = new Web3(ethereum);
-            const contract = new web3.eth.Contract(OCFC.abi as any, OCFC.networks["43113"].address) || null;
-            setContract(contract);
+        const connect = async () => {
+            const ethereum = await connectWallet();
+            if (!ethereum) return;
 
             setAccount(ethereum.selectedAddress);
-            console.log(contract)
+
+            const contract = await getContract(ethereum);
+            if (!contract) return;
+            setContract(contract);
+            setIsWalletConnected(true);
         }
+        connect();
     }, []);
 
     const mintMember = async () => {
@@ -103,7 +122,18 @@ export const OCFCProvider = (props: any) => {
     }
 
     return (
-        <OcfcContext.Provider value={{ account, contract, mintMember, createFight, joinAndFight, trainFighter, withdraw }}>
+        <OcfcContext.Provider
+            value={{
+                account,
+                contract,
+                isWalletConnected,
+                connectWallet,
+                mintMember,
+                createFight,
+                joinAndFight,
+                trainFighter,
+                withdraw
+            }}>
             {props.children}
         </OcfcContext.Provider>
     );
