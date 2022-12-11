@@ -90,11 +90,21 @@ export const OCFCProvider = (props: any) => {
         connect();
     }, []);
 
+    useEffect(() => {
+        if (window.ethereum) {
+            window.ethereum.on('chainChanged', () => {
+                window.location.reload();
+            })
+            window.ethereum.on('accountsChanged', () => {
+                window.location.reload();
+            })
+        }
+    })
+
     const mintMember = async () => {
         if (!contract) return;
 
         const result = await contract.methods.mintMember().send({ from: account });
-        console.log(contract.methods)
         return result;
     }
 
@@ -112,7 +122,6 @@ export const OCFCProvider = (props: any) => {
         if (!contract) return;
 
         const result = await contract.methods.createFight(address, move1, move2, move3).send({ from: account });
-        console.log(result);
         return result;
     }
 
@@ -120,7 +129,6 @@ export const OCFCProvider = (props: any) => {
         if (!contract) return;
 
         const result = await contract.methods.joinAndFight(fightId, move1, move2, move3).send({ from: account });
-        console.log(result);
         return result;
     }
 
@@ -141,7 +149,6 @@ export const OCFCProvider = (props: any) => {
     const getBalance = async () => {
         if (!contract) return;
         const result = await contract.methods.balanceOf(account).call({ from: account });
-        console.log(result)
         return result;
     }
 
