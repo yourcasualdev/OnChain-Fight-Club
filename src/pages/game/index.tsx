@@ -5,7 +5,8 @@ import { ActiveTabContext } from '../../context/activeTab'
 import CarouselNavigation from '../../components/CarouselNavigation'
 import Header from '../../containers/header'
 
-import { tabElements } from '../../constants'
+import { tablist } from '../../constants'
+import CreateFight from '../../containers/CreateFight'
 
 export default function Home() {
   const OCFC = useContext(OCFContext);
@@ -27,16 +28,18 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className='background min-h-screen pt-20'>
+      <body className='background min-h-screen pt-20'>
         <div className='mt-5'>
           <CarouselNavigation
-            elements={tabElements}
+            titles={tablist.map((tab) => tab.title)}
             activeTabIndex={activeTabIndex}
             changeActiveTabIndex={changeActiveTabIndex}
           />
         </div>
-
-      </main>
+        <main>
+          {tablist[activeTabIndex]?.component || <div>Not Found</div>}
+        </main>
+      </body>
     </div >
   )
 }
