@@ -24,6 +24,9 @@ interface Ocfc {
             withdraw(): {
                 send(options: { from: string; }): Promise<any>;
             };
+            balanceOf(address: string): {
+                call(options: { from: string; }): Promise<any>;
+            };
         };
     }
 }
@@ -32,8 +35,10 @@ interface OcfcContext {
     account: string;
     contract: Ocfc["contract"] | null;
     isWalletConnected: boolean;
+    getBalance: () => Promise<any>;
     connectWallet: () => Promise<any>
     mintMember: () => Promise<any>;
+    isAlreadyMember: () => Promise<boolean | undefined>;
     createFight: (address: string, move1: number, move2: number, move3: number) => Promise<any>;
     joinAndFight: (fightId: number, move1: number, move2: number, move3: number) => Promise<any>;
     trainFighter: (address: string) => Promise<any>;
@@ -89,14 +94,22 @@ export const OCFCProvider = (props: any) => {
         if (!contract) return;
 
         const result = await contract.methods.mintMember().send({ from: account });
-        console.log(contract.methods.mintMember())
+        console.log(contract.methods)
         return result;
+    }
+
+    const isAlreadyMember = async () => {
+        if (!contract) return;
+
+        console.log(contract.methods.member(account));
+        return false
     }
 
     const createFight = async (address: string, move1: number, move2: number, move3: number) => {
         if (!contract) return;
 
         const result = await contract.methods.createFight(address, move1, move2, move3).send({ from: account });
+        console.log(result);
         return result;
     }
 
@@ -104,6 +117,7 @@ export const OCFCProvider = (props: any) => {
         if (!contract) return;
 
         const result = await contract.methods.joinAndFight(fightId, move1, move2, move3).send({ from: account });
+        console.log(result);
         return result;
     }
 
@@ -121,14 +135,23 @@ export const OCFCProvider = (props: any) => {
         return result;
     }
 
+    const getBalance = async () => {
+        if (!contract) return;
+        const result = await contract.methods.balanceOf(account).call({ from: account });
+        console.log(result)
+        return result;
+    }
+
     return (
         <OcfcContext.Provider
             value={{
                 account,
                 contract,
                 isWalletConnected,
+                getBalance,
                 connectWallet,
                 mintMember,
+                isAlreadyMember,
                 createFight,
                 joinAndFight,
                 trainFighter,

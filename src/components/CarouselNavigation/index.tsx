@@ -3,22 +3,23 @@ import React from "react";
 type Props = {
     elements:
     {
-        title: string,
-        onCLick: () => any,
+        title: string
     }[],
+    activeTabIndex: number,
+    changeActiveTabIndex: (index: number) => void,
     [x: string]: any,
 }
 
-const CarouselNavigation: React.FC<Props> = ({ elements, ...remainingProps }) => {
+const CarouselNavigation: React.FC<Props> = ({ elements, activeTabIndex, changeActiveTabIndex, ...remainingProps }) => {
     return (
         <div className="flex items-center justify-center" {...remainingProps}>
-            <div className="flex items-center justify-between w-4/12 ">
+            <div className="tabs tabs-boxed">
                 {elements.map((element, index) => (
                     <button
                         key={index}
                         type="button"
-                        className="border-[#fbfbfe] text-[#fbfbfe] border-x-2 border-y-2 font-bold py-2 px-4 rounded-md"
-                        onClick={element.onCLick}
+                        className={`tab ${activeTabIndex === index ? "tab-active" : ""} tab-lifted tab-rounded`}
+                        onClick={() => changeActiveTabIndex(index)}
                     >
                         {element.title}
                     </button>
