@@ -6,7 +6,11 @@ export const withToast = (WrappedComponent: React.FC) => {
     const WithToast: React.FC = (props) => {
         return (
             <>
-                <ToastContainer />
+                <ToastContainer
+                    theme="dark"
+                    position="bottom-center"
+                    autoClose={3000}
+                />
                 <WrappedComponent {...props} />
             </>
         );

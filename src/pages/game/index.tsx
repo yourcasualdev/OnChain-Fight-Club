@@ -4,7 +4,7 @@ import { ActiveTabContext } from '../../context/activeTab'
 import CarouselNavigation from '../../components/CarouselNavigation'
 import Header from '../../containers/header'
 
-import { tablist } from '../../constants'
+import { TAB_LIST } from '../../constants'
 
 import { withToast } from '../../hocs/withToast'
 
@@ -23,19 +23,19 @@ const Home = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <body className='background min-h-screen pt-20'>
+      <main className='background min-h-screen pt-20'>
         <div className='mt-12'>
           <CarouselNavigation
-            titles={tablist.map((tab) => tab.title)}
+            titles={TAB_LIST.map((tab) => tab.title)}
             activeTabIndex={activeTabIndex}
             changeActiveTabIndex={changeActiveTabIndex}
           />
         </div>
         <main>
-          {tablist[activeTabIndex]?.component || <div>Not Found</div>}
+          {TAB_LIST[activeTabIndex]?.component || <div>Not Found</div>}
         </main>
-      </body>
-    </div >
+      </main>
+    </div>
   )
 }
 
