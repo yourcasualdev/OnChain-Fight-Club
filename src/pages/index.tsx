@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useContext, useState, useEffect } from 'react'
+import { useContext } from 'react'
 import OCFContext from '../context/ocfc'
 import Header from '../containers/header'
 
