@@ -1,24 +1,19 @@
 import Head from 'next/head'
-import { useContext, useState } from 'react'
-import OCFContext from '../../context/ocfc'
+import { useContext } from 'react'
 import { ActiveTabContext } from '../../context/activeTab'
 import CarouselNavigation from '../../components/CarouselNavigation'
 import Header from '../../containers/header'
 
 import { tablist } from '../../constants'
-import CreateFight from '../../containers/CreateFight'
 
-export default function Home() {
-  const OCFC = useContext(OCFContext);
+import { withToast } from '../../hocs/withToast'
+
+const Home = () => {
   const ActiveTab = useContext(ActiveTabContext);
 
-  if (!OCFC) return null;
   if (!ActiveTab) return null;
 
-  const { account, getBalance, mintMember, createFight, joinAndFight, isAlreadyMember } = OCFC;
   const { activeTabIndex, changeActiveTabIndex } = ActiveTab;
-
-
 
   return (
     <div>
@@ -29,7 +24,7 @@ export default function Home() {
       </Head>
       <Header />
       <body className='background min-h-screen pt-20'>
-        <div className='mt-5'>
+        <div className='mt-12'>
           <CarouselNavigation
             titles={tablist.map((tab) => tab.title)}
             activeTabIndex={activeTabIndex}
@@ -43,3 +38,5 @@ export default function Home() {
     </div >
   )
 }
+
+export default withToast(Home)
