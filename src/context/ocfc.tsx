@@ -100,9 +100,12 @@ export const OCFCProvider = (props: any) => {
 
     const isAlreadyMember = async () => {
         if (!contract) return;
+        const result = await contract.methods.balanceOf(account).call({ from: account });
 
-        console.log(contract.methods.member(account));
-        return false
+        if (result > 0) {
+            return true;
+        }
+        return false;
     }
 
     const createFight = async (address: string, move1: number, move2: number, move3: number) => {

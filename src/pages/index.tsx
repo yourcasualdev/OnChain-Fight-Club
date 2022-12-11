@@ -1,27 +1,33 @@
 import Head from 'next/head'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useContext, useState, useEffect } from 'react'
 import OCFContext from '../context/ocfc'
 import Header from '../containers/header'
 
 export default function Home() {
   const OCFC = useContext(OCFContext);
-
-  useEffect(() => {
-
-  }, []);
-
+  const router = useRouter();
 
   if (!OCFC) return null;
 
-  const { isWalletConnected } = OCFC;
+  const { isWalletConnected, mintMember, isAlreadyMember } = OCFC;
 
   const handleJoinFight = async () => {
     if (!isWalletConnected) return;
-    // redirect to join fight page
-    window.location.href = '/game';
-  }
 
+    const isMember = await isAlreadyMember();
+
+    if (!isMember) {
+      try {
+        const result = await mintMember();
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+    }
+    router.push('/game');
+  }
 
   return (
     <div>
@@ -40,12 +46,12 @@ export default function Home() {
           {!isWalletConnected ? (
             <label htmlFor="my-modal-4" className="btn">Join Fight</label>
           ) : (
-            <Link
-              href='/game'
+            <button
+              onClick={handleJoinFight}
               className='btn btn-primary'
               type='button'
 
-            >Join Fight</Link>
+            >Join Fight</button>
           )}
         </div>
       </main>
